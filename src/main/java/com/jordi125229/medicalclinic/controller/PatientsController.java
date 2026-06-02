@@ -6,9 +6,7 @@ import com.jordi125229.medicalclinic.service.PatientsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +15,6 @@ public class PatientsController {
     private final PatientsService patientsService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public List<Patient> getPatients() {
         return patientsService.getPatients();
     }
@@ -33,18 +30,19 @@ public class PatientsController {
         return patientsService.createPatient(patient);
     }
 
-    @PatchMapping("/{email}")
-    public Patient editPatientByEmail(@PathVariable("email") String email, @RequestBody Patient patient) {
-        return patientsService.editPatient(email, patient);
+    @PutMapping("/{email}")
+    public void editPatientByEmail(@PathVariable("email") String email, @RequestBody Patient patient) {
+        patientsService.editPatient(email, patient);
     }
 
     @PatchMapping("/{email}/password")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editPassword(@PathVariable("email") String email, @RequestBody ChangePassword changePassword) {
         patientsService.changePassword(email, changePassword);
     }
 
     @DeleteMapping("/{email}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePatient(@PathVariable("email") String email) {
         patientsService.deletePatient(email);
     }

@@ -15,19 +15,22 @@ public class PatientsRepository {
         patients = new ArrayList<>();
     }
 
-    public List<Patient> findPatients() {
-        return patients;
+    public List<Patient> returnPatients() {
+        return new ArrayList<>(patients);
     }
 
     public Optional<Patient> returnPatientByEmail(String email) {
-        return patients.stream().filter(patient -> patient.getEmail().equals(email)).findFirst();
+        return patients.stream()
+                .filter(patient -> patient.getEmail().equals(email))
+                .findFirst();
     }
 
-    public void addPatient(Patient patient) {
+    public Patient addPatient(Patient patient) {
         patients.add(patient);
+        return patient;
     }
 
-    public void deletePatientByEmail(String email) {
+    public void deletePatient(String email) {
         returnPatientByEmail(email).ifPresent(patients::remove);
     }
 }
