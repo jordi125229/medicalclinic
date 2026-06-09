@@ -2,8 +2,11 @@ package com.jordi125229.medicalclinic.service;
 
 import com.jordi125229.medicalclinic.exception.PatientNotFoundException;
 import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
-import com.jordi125229.medicalclinic.model.ChangePassword;
-import com.jordi125229.medicalclinic.model.Patient;
+import com.jordi125229.medicalclinic.model.CommandPatient;
+import com.jordi125229.medicalclinic.model.mapper.PatientMapper;
+import com.jordi125229.medicalclinic.model.entity.ChangePassword;
+import com.jordi125229.medicalclinic.model.entity.Patient;
+import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.repository.PatientsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,20 +19,30 @@ import java.util.Optional;
 @Service
 public class PatientsService {
     private final PatientsRepository patientsRepository;
+    private final PatientMapper patientMapper;
 
-    public List<Patient> getPatients() {
-        return patientsRepository.returnPatients();
+    public List<PatientDto> getPatients() {
+        return patientsRepository.returnPatients().stream()
+                .map(patientMapper::patientToDto)
+                .toList();
     }
 
-    public Patient createPatient(Patient patient) {
+    public PatientDto createPatient(CommandPatient commandPatient) {
+        Patient patient = new Patient(commandPatient.getEmail(), commandPatient.getPassword(), commandPatient.getIdCardNo(), commandPatient.getFirstName(),
+                commandPatient.getLastName(), commandPatient.getPhoneNumber(), commandPatient.getBirthday());
         validateEmail(patient);
-        patientsRepository.addPatient(patient);
-        return patient;
+        Patient patientBeforeMapping = patientsRepository.addPatient(patient);
+        return patientMapper.patientToDto(patientBeforeMapping);
     }
 
     public Patient getPatientByEmail(String email) {
         return patientsRepository.returnPatientByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient wasn't found!", HttpStatus.NOT_FOUND));
+    }
+
+    public PatientDto getPatientDto(String email) {
+        Patient patient = getPatientByEmail(email);
+        return patientMapper.patientToDto(patient);
     }
 
     public void deletePatient(String email) {

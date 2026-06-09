@@ -1,6 +1,6 @@
 package com.jordi125229.medicalclinic.repository;
 
-import com.jordi125229.medicalclinic.model.Patient;
+import com.jordi125229.medicalclinic.model.entity.Patient;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
