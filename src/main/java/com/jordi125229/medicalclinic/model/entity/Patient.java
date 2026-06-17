@@ -1,5 +1,7 @@
 package com.jordi125229.medicalclinic.model.entity;
 
+import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,27 +14,21 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Patient {
-    @NotBlank(message = "Email cannot be empty!")
-    @Email(message = "Wrong email format!")
-    private String email;
-    @Size(min = 8)
-    @NotBlank
-    private String password;
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String idCardNo;
-    @NotBlank
     private String firstName;
-    @NotBlank
     private String lastName;
-    @NotBlank
     private String phoneNumber;
-    @NotNull
     private LocalDate birthday;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public void editPatient(Patient patient) {
-        this.email = patient.getEmail();
-        this.password = patient.getPassword();
+    public void editPatient(CommandPatientToUpdate patient) {
         this.idCardNo = patient.getIdCardNo();
         this.firstName = patient.getFirstName();
         this.lastName = patient.getLastName();

@@ -2,8 +2,8 @@ package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.CommandPatient;
 import com.jordi125229.medicalclinic.model.entity.ChangePassword;
-import com.jordi125229.medicalclinic.model.entity.Patient;
 import com.jordi125229.medicalclinic.model.dto.PatientDto;
+import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
 import com.jordi125229.medicalclinic.service.PatientsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,15 +34,15 @@ public class PatientsController {
     }
 
     @PutMapping("/{email}")
-    public void editPatientByEmail(@PathVariable("email") String email, @Valid @RequestBody Patient patient) {
+    public void editPatientByEmail(@PathVariable("email") String email, @Valid @RequestBody CommandPatientToUpdate patient) {
         patientsService.editPatient(email, patient);
     }
 
-    @PatchMapping("/{email}/password")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editPassword(@PathVariable("email") String email, @RequestBody ChangePassword changePassword) {
-        patientsService.changePassword(email, changePassword);
-    }
+//    @PatchMapping("/{email}/password")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void editPassword(@PathVariable("email") String email, @RequestBody ChangePassword changePassword) {
+//        patientsService.changePassword(email, changePassword);
+//    }
 
     @DeleteMapping("/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
