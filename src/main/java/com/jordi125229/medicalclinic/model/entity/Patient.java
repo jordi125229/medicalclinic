@@ -2,7 +2,6 @@ package com.jordi125229.medicalclinic.model.entity;
 
 import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

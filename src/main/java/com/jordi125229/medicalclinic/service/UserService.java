@@ -4,9 +4,10 @@ import com.jordi125229.medicalclinic.exception.PatientNotFoundException;
 import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
 import com.jordi125229.medicalclinic.exception.WrongPasswordException;
 import com.jordi125229.medicalclinic.model.dto.UserDto;
-import com.jordi125229.medicalclinic.model.entity.ChangePassword;
+import com.jordi125229.medicalclinic.model.ChangePassword;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.mapper.UserMapper;
+import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PatientRepository patientRepository;
 
     public List<UserDto> getUsers() {
         return userRepository.findAll().stream()

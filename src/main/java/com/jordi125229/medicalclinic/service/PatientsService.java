@@ -2,17 +2,14 @@ package com.jordi125229.medicalclinic.service;
 
 import com.jordi125229.medicalclinic.exception.PatientNotFoundException;
 import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
-import com.jordi125229.medicalclinic.exception.WrongPasswordException;
 import com.jordi125229.medicalclinic.model.CommandPatient;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
 import com.jordi125229.medicalclinic.model.mapper.PatientMapper;
-import com.jordi125229.medicalclinic.model.entity.ChangePassword;
 import com.jordi125229.medicalclinic.model.entity.Patient;
 import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

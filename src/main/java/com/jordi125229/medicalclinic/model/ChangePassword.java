@@ -1,4 +1,4 @@
-package com.jordi125229.medicalclinic.model.entity;
+package com.jordi125229.medicalclinic.model;
 
 import lombok.Data;
 

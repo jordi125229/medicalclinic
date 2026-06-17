@@ -1,7 +1,6 @@
 package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.CommandPatient;
-import com.jordi125229.medicalclinic.model.entity.ChangePassword;
 import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
 import com.jordi125229.medicalclinic.service.PatientsService;

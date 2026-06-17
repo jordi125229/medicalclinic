@@ -1,7 +1,7 @@
 package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.dto.UserDto;
-import com.jordi125229.medicalclinic.model.entity.ChangePassword;
+import com.jordi125229.medicalclinic.model.ChangePassword;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.service.UserService;
 import jakarta.validation.Valid;
