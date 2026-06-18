@@ -1,6 +1,6 @@
 package com.jordi125229.medicalclinic.model.entity;
 
-import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
+import com.jordi125229.medicalclinic.model.command.UpdatePatientCommand;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class Patient {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void editPatient(CommandPatientToUpdate patient) {
+    public void editPatient(UpdatePatientCommand patient) {
         this.idCardNo = patient.getIdCardNo();
         this.firstName = patient.getFirstName();
         this.lastName = patient.getLastName();

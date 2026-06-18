@@ -1,0 +1,72 @@
+package com.jordi125229.medicalclinic.service;
+
+import com.jordi125229.medicalclinic.exception.NoDoctorException;
+import com.jordi125229.medicalclinic.exception.PatientNotFoundException;
+import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
+import com.jordi125229.medicalclinic.model.command.CreateDoctorCommand;
+import com.jordi125229.medicalclinic.model.command.CreatePatientCommand;
+import com.jordi125229.medicalclinic.model.dto.DoctorDto;
+import com.jordi125229.medicalclinic.model.entity.Doctor;
+import com.jordi125229.medicalclinic.model.entity.Patient;
+import com.jordi125229.medicalclinic.model.entity.User;
+import com.jordi125229.medicalclinic.model.mapper.DoctorMapper;
+import com.jordi125229.medicalclinic.repository.DoctorRepository;
+import com.jordi125229.medicalclinic.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class DoctorService {
+    private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
+    private final DoctorMapper doctorMapper;
+
+    public List<DoctorDto> getDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(doctorMapper::doctorToDto)
+                .toList();
+    }
+
+    public DoctorDto getDoctorDto(String email){
+        Doctor doctor = getDoctorByEmail(email);
+        return doctorMapper.doctorToDto(doctor);
+    }
+
+    public Doctor getDoctorByEmail(String email) {
+        return doctorRepository.findByUserEmail(email)
+                .orElseThrow(() -> new NoDoctorException("Doctor wasn't found!", HttpStatus.NOT_FOUND));
+    }
+
+    public DoctorDto createDoctor(CreateDoctorCommand commandDoctor) {
+        User user = createUser(commandDoctor);
+        userRepository.save(user);
+        Doctor doctor = new Doctor(null, commandDoctor.getName(), commandDoctor.getLastName(),
+                commandDoctor.getSpecialization(), null, user);
+        doctorRepository.save(doctor);
+        return doctorMapper.doctorToDto(doctor);
+    }
+
+    private User createUser(CreateDoctorCommand commandDoctor) {
+        validateEmail(commandDoctor.getEmail());
+        User user = new User();
+        user.setEmail(commandDoctor.getEmail());
+        user.setPassword(commandDoctor.getPassword());
+        return user;
+    }
+
+    public void deleteDoctor(String email){
+        Doctor doctor = getDoctorByEmail(email);
+        doctorRepository.delete(doctor);
+    }
+
+    private void validateEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            throw new PatientsEmailAlreadyExists("User's email already exists!", HttpStatus.CONFLICT);
+        }
+    }
+}

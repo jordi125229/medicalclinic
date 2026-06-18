@@ -1,8 +1,9 @@
 package com.jordi125229.medicalclinic.controller;
 
-import com.jordi125229.medicalclinic.model.CommandPatient;
+import com.jordi125229.medicalclinic.model.command.CreatePatientCommand;
+import com.jordi125229.medicalclinic.model.command.CreateUserCommand;
 import com.jordi125229.medicalclinic.model.dto.PatientDto;
-import com.jordi125229.medicalclinic.model.mapper.CommandPatientToUpdate;
+import com.jordi125229.medicalclinic.model.command.UpdatePatientCommand;
 import com.jordi125229.medicalclinic.service.PatientsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,20 +29,14 @@ public class PatientsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PatientDto createPatient(@Valid @RequestBody CommandPatient patient) {
+    public PatientDto createPatient(@Valid @RequestBody CreatePatientCommand patient) {
         return patientsService.createPatient(patient);
     }
 
     @PutMapping("/{email}")
-    public void editPatientByEmail(@PathVariable("email") String email, @Valid @RequestBody CommandPatientToUpdate patient) {
+    public void editPatientByEmail(@PathVariable("email") String email, @Valid @RequestBody UpdatePatientCommand patient) {
         patientsService.editPatient(email, patient);
     }
-
-//    @PatchMapping("/{email}/password")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void editPassword(@PathVariable("email") String email, @RequestBody ChangePassword changePassword) {
-//        patientsService.changePassword(email, changePassword);
-//    }
 
     @DeleteMapping("/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

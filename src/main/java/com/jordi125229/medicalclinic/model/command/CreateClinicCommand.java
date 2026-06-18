@@ -1,27 +1,24 @@
-package com.jordi125229.medicalclinic.model.entity;
+package com.jordi125229.medicalclinic.model.command;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Clinic {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique = true)
+public class CreateClinicCommand {
+    @NotBlank
     private String name;
+    @NotBlank
     private String city;
+    @NotBlank
     private String postalCode;
+    @NotBlank
     private String street;
+    @NotBlank
     private String number;
-    @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
 }

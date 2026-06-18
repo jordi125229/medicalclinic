@@ -1,7 +1,7 @@
 package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.dto.UserDto;
-import com.jordi125229.medicalclinic.model.ChangePassword;
+import com.jordi125229.medicalclinic.model.command.ChangePasswordCommand;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.service.UserService;
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class UserController {
 
     @PatchMapping("/{email}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editPassword(@PathVariable("email") String email, @RequestBody ChangePassword changePassword) {
+    public void editPassword(@PathVariable("email") String email, @Valid @RequestBody ChangePasswordCommand changePassword) {
         userService.changePassword(email, changePassword);
     }
 
@@ -39,5 +39,4 @@ public class UserController {
     public void deleteUser(@PathVariable String email){
         userService.deleteUser(email);
     }
-
 }

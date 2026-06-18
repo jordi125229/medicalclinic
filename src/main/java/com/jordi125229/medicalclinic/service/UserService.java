@@ -4,7 +4,7 @@ import com.jordi125229.medicalclinic.exception.PatientNotFoundException;
 import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
 import com.jordi125229.medicalclinic.exception.WrongPasswordException;
 import com.jordi125229.medicalclinic.model.dto.UserDto;
-import com.jordi125229.medicalclinic.model.ChangePassword;
+import com.jordi125229.medicalclinic.model.command.ChangePasswordCommand;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.mapper.UserMapper;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
@@ -43,7 +43,8 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("User wasn't found!", HttpStatus.NOT_FOUND));
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("User wasn't found!", HttpStatus.NOT_FOUND));
     }
 
     public void deleteUser(String email) {
@@ -51,13 +52,12 @@ public class UserService {
         userRepository.delete(userByEmail);
     }
 
-    public void changePassword(String email, ChangePassword changePassword) {
+    public void changePassword(String email, ChangePasswordCommand changePassword) {
         User user = getUserByEmail(email);
-        if (changePassword.getPassword().equals(user.getPassword())) {
-            user.setPassword(changePassword.getNewPassword());
-        } else {
+        if (!changePassword.getPassword().equals(user.getPassword())) {
             throw new WrongPasswordException("Wrong password!", HttpStatus.BAD_REQUEST);
         }
+        user.setPassword(changePassword.getNewPassword());
         userRepository.save(user);
     }
 }
