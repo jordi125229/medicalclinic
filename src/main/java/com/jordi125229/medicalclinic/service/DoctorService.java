@@ -6,12 +6,14 @@ import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
 import com.jordi125229.medicalclinic.model.command.CreateDoctorCommand;
 import com.jordi125229.medicalclinic.model.command.CreatePatientCommand;
 import com.jordi125229.medicalclinic.model.dto.DoctorDto;
+import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.model.entity.Doctor;
 import com.jordi125229.medicalclinic.model.entity.Patient;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.mapper.DoctorMapper;
 import com.jordi125229.medicalclinic.repository.DoctorRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,7 @@ public class DoctorService {
         User user = createUser(commandDoctor);
         userRepository.save(user);
         Doctor doctor = new Doctor(null, commandDoctor.getName(), commandDoctor.getLastName(),
-                commandDoctor.getSpecialization(), null, user);
+                commandDoctor.getSpecialization(), null, user, null);
         doctorRepository.save(doctor);
         return doctorMapper.doctorToDto(doctor);
     }
@@ -58,15 +60,17 @@ public class DoctorService {
         return user;
     }
 
+    @Transactional
     public void deleteDoctor(String email){
         Doctor doctor = getDoctorByEmail(email);
-        doctorRepository.delete(doctor);
+        doctor.getUser().setDoctor(null);
+        doctorRepository.deleteById(doctor.getId());
     }
 
     private void validateEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            throw new PatientsEmailAlreadyExists("User's email already exists!", HttpStatus.CONFLICT);
+            throw new PatientsEmailAlreadyExists("Doctor with this email already exists!", HttpStatus.CONFLICT);
         }
     }
 }

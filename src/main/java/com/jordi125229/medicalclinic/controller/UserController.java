@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers(){
+    public List<UserDto> getUsers() {
         return userService.getUsers();
     }
 
@@ -36,7 +36,7 @@ public class UserController {
 
     @DeleteMapping("/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable String email){
+    public void deleteUser(@PathVariable String email) {
         userService.deleteUser(email);
     }
 }

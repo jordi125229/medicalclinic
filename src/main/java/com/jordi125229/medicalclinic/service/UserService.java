@@ -48,8 +48,8 @@ public class UserService {
     }
 
     public void deleteUser(String email) {
-        User userByEmail = getUserByEmail(email);
-        userRepository.delete(userByEmail);
+        User user = getUserByEmail(email);
+        userRepository.delete(user);
     }
 
     public void changePassword(String email, ChangePasswordCommand changePassword) {

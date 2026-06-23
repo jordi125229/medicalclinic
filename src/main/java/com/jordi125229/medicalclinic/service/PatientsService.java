@@ -11,6 +11,7 @@ import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
 import jakarta.annotation.Nonnull;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class PatientsService {
     private final PatientRepository patientsRepository;
     private final PatientMapper patientMapper;
@@ -35,7 +36,7 @@ public class PatientsService {
         User user = createUser(createPatientCommend);
         userRepository.save(user);
         Patient patient = new Patient(null, createPatientCommend.getIdCardNo(), createPatientCommend.getFirstName(),
-                createPatientCommend.getLastName(), createPatientCommend.getPhoneNumber(), createPatientCommend.getBirthday(), user);
+                createPatientCommend.getLastName(), createPatientCommend.getPhoneNumber(), createPatientCommend.getBirthday(), user, null);
         Patient patientEntity = patientsRepository.save(patient);
         return patientMapper.patientToDto(patientEntity);
     }
@@ -53,8 +54,11 @@ public class PatientsService {
         return patientMapper.patientToDto(patient);
     }
 
+    @Transactional
     public void deletePatient(String email) {
-        Patient patient = getPatientByEmail(email);
+        Patient patient = patientsRepository.findByUserEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient wasn't found!", HttpStatus.NOT_FOUND));
+        patient.getUser().setPatient(null);
         patientsRepository.delete(patient);
     }
 
@@ -73,14 +77,14 @@ public class PatientsService {
     private void validateEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            throw new PatientsEmailAlreadyExists("User's email already exists!", HttpStatus.CONFLICT);
+            throw new PatientsEmailAlreadyExists("User with this email already exists!", HttpStatus.CONFLICT);
         }
     }
 
     private void validateEmailForUpdatePatient(String email, Long id) {
         Optional<Patient> patientFound = patientsRepository.findByUserEmailAndIdNot(email, id);
         if (patientFound.isPresent()) {
-            throw new PatientsEmailAlreadyExists("Patient's email already exists!", HttpStatus.CONFLICT);
+            throw new PatientsEmailAlreadyExists("Patient with this email already exists!", HttpStatus.CONFLICT);
         }
     }
 }

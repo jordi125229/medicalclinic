@@ -14,5 +14,6 @@ import lombok.Setter;
 public class UserDto {
     @NotBlank(message = "Email cannot be empty!")
     @Email(message = "Wrong email format!")
+    private Long userId;
     private String email;
 }

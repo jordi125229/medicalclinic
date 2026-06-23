@@ -32,7 +32,7 @@ public class ClinicService {
 
     public ClinicDto createClinic(CreateClinicCommand clinicCommand) {
         Clinic clinic = new Clinic(null, clinicCommand.getName(), clinicCommand.getCity(),
-                clinicCommand.getPostalCode(), clinicCommand.getStreet(), clinicCommand.getNumber(), null);
+                clinicCommand.getPostalCode(), clinicCommand.getStreet(), clinicCommand.getNumber(), null, null);
         clinicRepository.save(clinic);
         return clinicMapper.clinicToDto(clinic);
     }
@@ -50,7 +50,7 @@ public class ClinicService {
     public void assignDoctorToClinic(String email, String name) {
         Doctor doctor = findDoctor(email);
         Clinic clinic = getClinicByName(name);
-        clinic.setDoctor(doctor);
+        clinic.getDoctors().add(doctor);
         clinicRepository.save(clinic);
     }
 

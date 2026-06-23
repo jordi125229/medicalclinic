@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,6 +27,8 @@ public class Patient {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany(mappedBy = "patient")
+    private Set<Visit> visit;
 
     public void editPatient(UpdatePatientCommand patient) {
         this.idCardNo = patient.getIdCardNo();
