@@ -22,7 +22,7 @@ public class DoctorController {
     }
 
     @GetMapping("/{email}")
-    public DoctorDto getDoctorByEmail(@PathVariable("email") String email){
+    public DoctorDto getDoctorByEmail(@PathVariable("email") String email) {
         return doctorService.getDoctorDto(email);
     }
 
@@ -34,7 +34,7 @@ public class DoctorController {
 
     @DeleteMapping("/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDoctor(@PathVariable("email") String email){
+    public void deleteDoctor(@PathVariable("email") String email) {
         doctorService.deleteDoctor(email);
     }
 }

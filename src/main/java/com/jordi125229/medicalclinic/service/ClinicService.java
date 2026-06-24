@@ -4,7 +4,6 @@ import com.jordi125229.medicalclinic.exception.NoClinicException;
 import com.jordi125229.medicalclinic.exception.NoDoctorException;
 import com.jordi125229.medicalclinic.model.command.CreateClinicCommand;
 import com.jordi125229.medicalclinic.model.dto.ClinicDto;
-import com.jordi125229.medicalclinic.model.dto.DoctorDto;
 import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.model.entity.Doctor;
 import com.jordi125229.medicalclinic.model.mapper.ClinicMapper;
@@ -13,9 +12,7 @@ import com.jordi125229.medicalclinic.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,24 +39,30 @@ public class ClinicService {
         return clinicMapper.clinicToDto(clinic);
     }
 
-    public Clinic getClinicByName(String name) {
+    public Clinic getClinicById(Long id) {
+        return clinicRepository.findById(id)
+                .orElseThrow(() -> new NoClinicException("Can't find clinic!", HttpStatus.NOT_FOUND));
+    }
+
+    private Clinic getClinicByName(String name) {
         return clinicRepository.findByName(name)
                 .orElseThrow(() -> new NoClinicException("Can't find clinic!", HttpStatus.NOT_FOUND));
     }
 
-    public void assignDoctorToClinic(String email, String name) {
+    public ClinicDto assignDoctorToClinic(String email, Long id) {
         Doctor doctor = findDoctor(email);
-        Clinic clinic = getClinicByName(name);
+        Clinic clinic = getClinicById(id);
         clinic.getDoctors().add(doctor);
         clinicRepository.save(clinic);
+        return clinicMapper.clinicToDto(clinic);
     }
 
-    public void deleteClinic(String name) {
-        Clinic clinic = getClinicByName(name);
-        clinicRepository.delete(clinic);
+    public void deleteClinic(Long id) {
+        clinicRepository.deleteById(id);
     }
 
     private Doctor findDoctor(String email) {
-        return doctorRepository.findByUserEmail(email).orElseThrow(() -> new NoDoctorException("Doctor wasn't found!", HttpStatus.NOT_FOUND));
+        return doctorRepository.findByUserEmail(email)
+                .orElseThrow(() -> new NoDoctorException("Doctor wasn't found!", HttpStatus.NOT_FOUND));
     }
 }

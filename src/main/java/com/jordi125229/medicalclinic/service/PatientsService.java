@@ -10,12 +10,10 @@ import com.jordi125229.medicalclinic.model.entity.Patient;
 import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
-import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -62,14 +60,15 @@ public class PatientsService {
         patientsRepository.delete(patient);
     }
 
-    public void editPatient(String email, UpdatePatientCommand patient) {
+    public PatientDto editPatient(String email, UpdatePatientCommand patient) {
         Patient patientByEmail = getPatientByEmail(email);
         validateEmailForUpdatePatient(email, patientByEmail.getId());
         patientByEmail.editPatient(patient);
         patientsRepository.save(patientByEmail);
+        return patientMapper.patientToDto(patientByEmail);
     }
 
-    public Patient getPatientByEmail(String email) {
+    private Patient getPatientByEmail(String email) {
         return patientsRepository.findByUserEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient wasn't found!", HttpStatus.NOT_FOUND));
     }

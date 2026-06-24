@@ -33,9 +33,9 @@ public class PatientsController {
         return patientsService.createPatient(patient);
     }
 
-    @PutMapping("/{email}")
-    public void editPatientByEmail(@PathVariable("email") String email, @Valid @RequestBody UpdatePatientCommand patient) {
-        patientsService.editPatient(email, patient);
+    @PutMapping("/{email}") // tu poprawic bo cos nie do konca dziala, zastanowic sie co chcemy zmieniac
+    public PatientDto editPatientByEmail(@PathVariable("email") String email, @Valid @RequestBody UpdatePatientCommand patient) {
+        return patientsService.editPatient(email, patient);
     }
 
     @DeleteMapping("/{email}")

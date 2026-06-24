@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +34,12 @@ public class DoctorService {
                 .toList();
     }
 
-    public DoctorDto getDoctorDto(String email){
+    public DoctorDto getDoctorDto(String email) {
         Doctor doctor = getDoctorByEmail(email);
         return doctorMapper.doctorToDto(doctor);
     }
 
-    public Doctor getDoctorByEmail(String email) {
+    private Doctor getDoctorByEmail(String email) {
         return doctorRepository.findByUserEmail(email)
                 .orElseThrow(() -> new NoDoctorException("Doctor wasn't found!", HttpStatus.NOT_FOUND));
     }
@@ -61,7 +62,7 @@ public class DoctorService {
     }
 
     @Transactional
-    public void deleteDoctor(String email){
+    public void deleteDoctor(String email) {
         Doctor doctor = getDoctorByEmail(email);
         doctor.getUser().setDoctor(null);
         doctorRepository.deleteById(doctor.getId());

@@ -1,5 +1,6 @@
 package com.jordi125229.medicalclinic.controller;
 
+import com.jordi125229.medicalclinic.model.command.CreateUserCommand;
 import com.jordi125229.medicalclinic.model.dto.UserDto;
 import com.jordi125229.medicalclinic.model.command.ChangePasswordCommand;
 import com.jordi125229.medicalclinic.model.entity.User;
@@ -24,7 +25,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@Valid @RequestBody User user) {
+    public UserDto createUser(@Valid @RequestBody CreateUserCommand user) {
         return userService.createUser(user);
     }
 

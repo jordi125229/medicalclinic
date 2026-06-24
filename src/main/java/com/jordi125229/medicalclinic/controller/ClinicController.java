@@ -2,6 +2,7 @@ package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.command.CreateClinicCommand;
 import com.jordi125229.medicalclinic.model.dto.ClinicDto;
+import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.service.ClinicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,10 @@ public class ClinicController {
         return clinicService.getClinics();
     }
 
-    @GetMapping("/{name}")
-    public ClinicDto getClinicByName(@PathVariable("name") String name) {
-        return clinicService.getClinicDto(name);
+    @GetMapping("/{id}")
+    public ClinicDto getClinicByName(@PathVariable Long id) {
+        Clinic clinicById = clinicService.getClinicById(id);
+        return clinicService.getClinicDto(clinicById.getName());
     }
 
     @PostMapping
@@ -32,14 +34,14 @@ public class ClinicController {
         return clinicService.createClinic(clinic);
     }
 
-    @PatchMapping("/{email}/clinics/{name}")
-    public void assignDoctorToClinic(@PathVariable("email") String email, @PathVariable("name") String name) {
-        clinicService.assignDoctorToClinic(email, name);
+    @PatchMapping("/{email}/{id}")
+    public ClinicDto assignDoctorToClinic(@PathVariable String email, @PathVariable Long id) {
+        return clinicService.assignDoctorToClinic(email, id);
     }
 
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteClinic(@PathVariable("name") String name) {
-        clinicService.deleteClinic(name);
+    public void deleteClinic(@PathVariable Long id) {
+        clinicService.deleteClinic(id);
     }
 }
