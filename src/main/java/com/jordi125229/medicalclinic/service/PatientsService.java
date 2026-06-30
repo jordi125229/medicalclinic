@@ -3,6 +3,7 @@ package com.jordi125229.medicalclinic.service;
 import com.jordi125229.medicalclinic.exception.PatientNotFoundException;
 import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
 import com.jordi125229.medicalclinic.model.command.CreatePatientCommand;
+import com.jordi125229.medicalclinic.model.dto.PageableDto;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.command.UpdatePatientCommand;
 import com.jordi125229.medicalclinic.model.mapper.PatientMapper;
@@ -12,8 +13,12 @@ import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -24,10 +29,13 @@ public class PatientsService {
     private final PatientMapper patientMapper;
     private final UserRepository userRepository;
 
-    public List<PatientDto> getPatients() {
-        return patientsRepository.findAll().stream()
+    public PageableDto<PatientDto> getPatients(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Patient> patientsPage = patientsRepository.findAll(pageable);
+        List<PatientDto> patients = patientsRepository.findAll(pageable).stream()
                 .map(patientMapper::patientToDto)
                 .toList();
+        return PageableDto.create(patients, patientsPage);
     }
 
     public PatientDto createPatient(CreatePatientCommand createPatientCommend) {

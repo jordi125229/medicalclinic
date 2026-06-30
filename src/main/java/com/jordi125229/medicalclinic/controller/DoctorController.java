@@ -2,13 +2,12 @@ package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.command.CreateDoctorCommand;
 import com.jordi125229.medicalclinic.model.dto.DoctorDto;
+import com.jordi125229.medicalclinic.model.dto.PageableDto;
 import com.jordi125229.medicalclinic.service.DoctorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,9 +15,9 @@ import java.util.List;
 public class DoctorController {
     private final DoctorService doctorService;
 
-    @GetMapping
-    public List<DoctorDto> getDoctors() {
-        return doctorService.getDoctors();
+    @GetMapping()
+    public PageableDto<DoctorDto> getDoctors(@RequestParam int page, @RequestParam int size) {
+        return doctorService.getDoctors(page, size);
     }
 
     @GetMapping("/{email}")

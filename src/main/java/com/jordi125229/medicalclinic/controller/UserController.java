@@ -1,6 +1,7 @@
 package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.command.CreateUserCommand;
+import com.jordi125229.medicalclinic.model.dto.PageableDto;
 import com.jordi125229.medicalclinic.model.dto.UserDto;
 import com.jordi125229.medicalclinic.model.command.ChangePasswordCommand;
 import com.jordi125229.medicalclinic.model.entity.User;
@@ -18,9 +19,9 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
-    public List<UserDto> getUsers() {
-        return userService.getUsers();
+    @GetMapping()
+    public PageableDto<UserDto> getUsers(@RequestParam int page, @RequestParam int size) {
+        return userService.getUsers(page, size);
     }
 
     @PostMapping

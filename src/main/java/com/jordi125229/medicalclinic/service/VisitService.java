@@ -1,7 +1,10 @@
 package com.jordi125229.medicalclinic.service;
 
 import com.jordi125229.medicalclinic.exception.*;
+import com.jordi125229.medicalclinic.model.command.UpdateVisitCommand;
 import com.jordi125229.medicalclinic.model.command.CreateVisitCommand;
+import com.jordi125229.medicalclinic.model.dto.PageableDto;
+import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.model.dto.VisitDto;
 import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.model.entity.Doctor;
@@ -13,6 +16,9 @@ import com.jordi125229.medicalclinic.repository.DoctorRepository;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -26,10 +32,13 @@ public class VisitService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
 
-    public List<VisitDto> getVisits() {
-        return visitRepository.findAll().stream()
+    public PageableDto<VisitDto> getVisits(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Visit> visitPage = visitRepository.findAll(pageable);
+        List<VisitDto> visits = visitRepository.findAll(pageable).stream()
                 .map(visitMapper::visitToDto)
                 .toList();
+        return PageableDto.create(visits, visitPage);
     }
 
     public VisitDto createVisit(CreateVisitCommand createVisitCommand) {
@@ -72,6 +81,12 @@ public class VisitService {
         return patientRepository.findByUserEmail(createVisitCommand)
                 .orElseThrow(() -> new PatientNotFoundException("Patient wasn't found!", HttpStatus.NOT_FOUND));
     }
+
+//    public VisitDto editVisit(UpdateVisitCommand changeVisitCommand, Long id){
+//        Visit visit = visitRepository.getReferenceById(id);
+//        visit.editVisit(changeVisitCommand);
+//        return visitMapper.visitToDto(visit);
+//    }
 
     private static void visitValidation(Visit visit) {
         if (!(visit.getPatient() == null)) {

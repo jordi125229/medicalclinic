@@ -2,6 +2,7 @@ package com.jordi125229.medicalclinic.controller;
 
 import com.jordi125229.medicalclinic.model.command.CreateClinicCommand;
 import com.jordi125229.medicalclinic.model.dto.ClinicDto;
+import com.jordi125229.medicalclinic.model.dto.PageableDto;
 import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.service.ClinicService;
 import jakarta.validation.Valid;
@@ -17,9 +18,9 @@ import java.util.List;
 public class ClinicController {
     private final ClinicService clinicService;
 
-    @GetMapping
-    public List<ClinicDto> getClinics() {
-        return clinicService.getClinics();
+    @GetMapping()
+    public PageableDto<ClinicDto> getClinics(@RequestParam int page, @RequestParam int size) {
+        return clinicService.getClinics(page, size);
     }
 
     @GetMapping("/{id}")
