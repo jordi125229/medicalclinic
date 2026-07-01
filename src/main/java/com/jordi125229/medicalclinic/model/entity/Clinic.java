@@ -29,8 +29,3 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic")
     private Set<Visit> visit;
 }
-
-//select *from Users;
-//select * from Doctor;
-//select * from Clinic;
-//SELECT * FROM doctor_clinic;

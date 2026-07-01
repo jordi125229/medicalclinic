@@ -19,7 +19,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping()
+    @GetMapping
     public PageableDto<UserDto> getUsers(@RequestParam int page, @RequestParam int size) {
         return userService.getUsers(page, size);
     }

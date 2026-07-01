@@ -32,7 +32,7 @@ public class PatientsService {
     public PageableDto<PatientDto> getPatients(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Patient> patientsPage = patientsRepository.findAll(pageable);
-        List<PatientDto> patients = patientsRepository.findAll(pageable).stream()
+        List<PatientDto> patients = patientsPage.stream()
                 .map(patientMapper::patientToDto)
                 .toList();
         return PageableDto.create(patients, patientsPage);

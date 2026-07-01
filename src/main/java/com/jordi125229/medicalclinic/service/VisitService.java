@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public class VisitService {
     public PageableDto<VisitDto> getVisits(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Visit> visitPage = visitRepository.findAll(pageable);
-        List<VisitDto> visits = visitRepository.findAll(pageable).stream()
+        List<VisitDto> visits = visitPage.stream()
                 .map(visitMapper::visitToDto)
                 .toList();
         return PageableDto.create(visits, visitPage);
@@ -81,12 +82,6 @@ public class VisitService {
         return patientRepository.findByUserEmail(createVisitCommand)
                 .orElseThrow(() -> new PatientNotFoundException("Patient wasn't found!", HttpStatus.NOT_FOUND));
     }
-
-//    public VisitDto editVisit(UpdateVisitCommand changeVisitCommand, Long id){
-//        Visit visit = visitRepository.getReferenceById(id);
-//        visit.editVisit(changeVisitCommand);
-//        return visitMapper.visitToDto(visit);
-//    }
 
     private static void visitValidation(Visit visit) {
         if (!(visit.getPatient() == null)) {

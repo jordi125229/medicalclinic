@@ -19,7 +19,7 @@ import java.util.List;
 public class PatientsController {
     private final PatientsService patientsService;
 
-    @GetMapping()
+    @GetMapping
     public PageableDto<PatientDto> getPatients(@RequestParam int page, @RequestParam int size) {
         return patientsService.getPatients(page, size);
     }

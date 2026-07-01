@@ -31,7 +31,7 @@ public class UserService {
     public PageableDto<UserDto> getUsers(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<User> userPage = userRepository.findAll(pageable);
-        List<UserDto> users = userRepository.findAll(pageable).stream()
+        List<UserDto> users = userPage.stream()
                 .map(userMapper::userToDto)
                 .toList();
         return PageableDto.create(users, userPage);

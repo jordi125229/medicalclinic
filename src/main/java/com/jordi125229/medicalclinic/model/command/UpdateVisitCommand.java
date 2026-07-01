@@ -1,6 +1,4 @@
 package com.jordi125229.medicalclinic.model.command;
-import com.jordi125229.medicalclinic.model.entity.Clinic;
-import com.jordi125229.medicalclinic.model.entity.Doctor;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,10 +8,10 @@ import java.time.LocalDateTime;
 @Getter
 public class UpdateVisitCommand {
     @NotBlank
-    private Clinic clinic;
+    private CreateClinicCommand clinic;
     @Email(message = "Wrong email format!")
     @NotBlank
-    private Doctor doctor;
+    private CreateDoctorCommand doctor;
     @NotNull
     private LocalDateTime visitStart;
     @NotNull

@@ -35,7 +35,7 @@ public class DoctorService {
     public PageableDto<DoctorDto> getDoctors(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Doctor> doctorsPage = doctorRepository.findAll(pageable);
-        List<DoctorDto> doctors = doctorRepository.findAll(pageable).stream()
+        List<DoctorDto> doctors = doctorsPage.stream()
                 .map(doctorMapper::doctorToDto)
                 .toList();
         return PageableDto.create(doctors, doctorsPage);

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class VisitController {
     private final VisitService visitService;
 
-    @GetMapping()
+    @GetMapping
     public PageableDto<VisitDto> getVisits(@RequestParam int page, @RequestParam int size) {
         return visitService.getVisits(page, size);
     }
@@ -29,11 +29,6 @@ public class VisitController {
     public VisitDto assignPatientToVisit(@PathVariable("email") String email, @PathVariable("id") String visitId) {
         return visitService.assignPatientToVisit(email, visitId);
     }
-
-//    @PutMapping("/{id}")
-//    public VisitDto editVisit(@PathVariable Long id, @RequestBody UpdateVisitCommand changeVisitCommand){
-//        return visitService.editVisit(changeVisitCommand, id);
-//    }
 
     @DeleteMapping("/{id}")
     public void deleteVisit(@PathVariable("id") String visitId) {

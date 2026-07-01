@@ -1,5 +1,4 @@
 package com.jordi125229.medicalclinic.model.command;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

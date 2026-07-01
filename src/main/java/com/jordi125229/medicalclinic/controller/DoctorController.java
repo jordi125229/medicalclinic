@@ -1,5 +1,4 @@
 package com.jordi125229.medicalclinic.controller;
-
 import com.jordi125229.medicalclinic.model.command.CreateDoctorCommand;
 import com.jordi125229.medicalclinic.model.dto.DoctorDto;
 import com.jordi125229.medicalclinic.model.dto.PageableDto;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class DoctorController {
     private final DoctorService doctorService;
 
-    @GetMapping()
+    @GetMapping
     public PageableDto<DoctorDto> getDoctors(@RequestParam int page, @RequestParam int size) {
         return doctorService.getDoctors(page, size);
     }

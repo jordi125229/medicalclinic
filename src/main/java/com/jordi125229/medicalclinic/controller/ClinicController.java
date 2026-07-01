@@ -18,7 +18,7 @@ import java.util.List;
 public class ClinicController {
     private final ClinicService clinicService;
 
-    @GetMapping()
+    @GetMapping
     public PageableDto<ClinicDto> getClinics(@RequestParam int page, @RequestParam int size) {
         return clinicService.getClinics(page, size);
     }
