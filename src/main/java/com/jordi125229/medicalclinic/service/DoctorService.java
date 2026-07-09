@@ -51,6 +51,7 @@ public class DoctorService {
                 .orElseThrow(() -> new NoDoctorException("Doctor wasn't found!", HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
     public DoctorDto createDoctor(CreateDoctorCommand commandDoctor) {
         User user = createUser(commandDoctor);
         userRepository.save(user);
@@ -60,6 +61,7 @@ public class DoctorService {
         return doctorMapper.doctorToDto(doctor);
     }
 
+    @Transactional
     private User createUser(CreateDoctorCommand commandDoctor) {
         validateEmail(commandDoctor.getEmail());
         User user = new User();
@@ -78,7 +80,7 @@ public class DoctorService {
     private void validateEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            throw new PatientsEmailAlreadyExists("Doctor with this email already exists!", HttpStatus.CONFLICT);
+            throw new PatientsEmailAlreadyExists("User with this email already exists!", HttpStatus.CONFLICT);
         }
     }
 }

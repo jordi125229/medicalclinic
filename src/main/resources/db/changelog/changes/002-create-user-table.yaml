@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-user-table
+      author: jordi1225
+      comment: "User table creation"
+      changes:
+        - createTable:
+            tableName: Users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(100)
+              - column:
+                  name: password
+                  type: VARCHAR(100)
+  - changeSet:
+      id: 002-add-column-to-patient-table
+      author: jordi1225
+      comment: "Adding column to patients table"
+      changes:
+        - addColumn:
+            tableName: Patient
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+
+

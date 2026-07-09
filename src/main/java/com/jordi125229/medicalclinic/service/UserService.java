@@ -11,6 +11,7 @@ import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.mapper.UserMapper;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ public class UserService {
         return PageableDto.create(users, userPage);
     }
 
+    @Transactional
     public UserDto createUser(CreateUserCommand createUserCommand) {
         validateEmail(createUserCommand.getEmail());
         User user = new User(null, createUserCommand.getEmail(), createUserCommand.getPassword(), null, null);
@@ -56,11 +58,13 @@ public class UserService {
                 .orElseThrow(() -> new PatientNotFoundException("User wasn't found!", HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
     public void deleteUser(String email) {
         User user = getUserByEmail(email);
         userRepository.delete(user);
     }
 
+    @Transactional
     public void changePassword(String email, ChangePasswordCommand changePassword) {
         User user = getUserByEmail(email);
         if (!changePassword.getPassword().equals(user.getPassword())) {

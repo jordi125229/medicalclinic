@@ -10,6 +10,7 @@ import com.jordi125229.medicalclinic.model.entity.Doctor;
 import com.jordi125229.medicalclinic.model.mapper.ClinicMapper;
 import com.jordi125229.medicalclinic.repository.ClinicRepository;
 import com.jordi125229.medicalclinic.repository.DoctorRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,7 @@ public class ClinicService {
         return PageableDto.create(clinics, pageClinics);
     }
 
+    @Transactional
     public ClinicDto createClinic(CreateClinicCommand clinicCommand) {
         Clinic clinic = new Clinic(null, clinicCommand.getName(), clinicCommand.getCity(),
                 clinicCommand.getPostalCode(), clinicCommand.getStreet(), clinicCommand.getNumber(), null, null);
@@ -41,21 +43,12 @@ public class ClinicService {
         return clinicMapper.clinicToDto(clinic);
     }
 
-    public ClinicDto getClinicDto(String name) {
-        Clinic clinic = getClinicByName(name);
+    public ClinicDto getClinicDto(Long id) {
+        Clinic clinic = getClinicById(id);
         return clinicMapper.clinicToDto(clinic);
     }
 
-    public Clinic getClinicById(Long id) {
-        return clinicRepository.findById(id)
-                .orElseThrow(() -> new NoClinicException("Can't find clinic!", HttpStatus.NOT_FOUND));
-    }
-
-    private Clinic getClinicByName(String name) {
-        return clinicRepository.findByName(name)
-                .orElseThrow(() -> new NoClinicException("Can't find clinic!", HttpStatus.NOT_FOUND));
-    }
-
+    @Transactional
     public ClinicDto assignDoctorToClinic(String email, Long id) {
         Doctor doctor = findDoctor(email);
         Clinic clinic = getClinicById(id);
@@ -64,8 +57,14 @@ public class ClinicService {
         return clinicMapper.clinicToDto(clinic);
     }
 
+    @Transactional
     public void deleteClinic(Long id) {
         clinicRepository.deleteById(id);
+    }
+
+    private Clinic getClinicById(Long id) {
+        return clinicRepository.findById(id)
+                .orElseThrow(() -> new NoClinicException("Can't find clinic!", HttpStatus.NOT_FOUND));
     }
 
     private Doctor findDoctor(String email) {

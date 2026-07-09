@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-clinic-table
+      author: jordi1225
+      changes:
+        - createTable:
+            tableName: clinic
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: city
+                  type: VARCHAR(100)
+              - column:
+                  name: postal_code
+                  type: VARCHAR(20)
+              - column:
+                  name: street
+                  type: VARCHAR(100)
+              - column:
+                  name: number
+                  type: VARCHAR(15)

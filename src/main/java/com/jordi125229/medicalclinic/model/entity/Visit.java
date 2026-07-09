@@ -1,6 +1,6 @@
 package com.jordi125229.medicalclinic.model.entity;
 
-import com.jordi125229.medicalclinic.model.command.UpdateVisitCommand;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +28,4 @@ public class Visit {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
-
-
 }

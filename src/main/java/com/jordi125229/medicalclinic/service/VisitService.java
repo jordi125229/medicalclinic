@@ -15,6 +15,7 @@ import com.jordi125229.medicalclinic.repository.ClinicRepository;
 import com.jordi125229.medicalclinic.repository.DoctorRepository;
 import com.jordi125229.medicalclinic.repository.PatientRepository;
 import com.jordi125229.medicalclinic.repository.VisitRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,7 @@ public class VisitService {
         return PageableDto.create(visits, visitPage);
     }
 
+    @Transactional
     public VisitDto createVisit(CreateVisitCommand createVisitCommand) {
         Clinic clinic = clinicRepository.findByName(createVisitCommand.getClinicName())
                 .orElseThrow(() -> new NoClinicException("Can't find clinic!", HttpStatus.NOT_FOUND));
@@ -62,6 +64,7 @@ public class VisitService {
         return visitMapper.visitToDto(visit);
     }
 
+    @Transactional
     public VisitDto assignPatientToVisit(String email, String visitId) {
         long idValue = Long.parseLong(visitId);
         Visit visit = visitRepository.findById(idValue)
@@ -73,6 +76,7 @@ public class VisitService {
         return visitMapper.visitToDto(visit);
     }
 
+    @Transactional
     public void deleteVisit(String visitId) {
         long idValue = Long.parseLong(visitId);
         visitRepository.deleteById(idValue);

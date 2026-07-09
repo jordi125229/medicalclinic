@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VisitDto {
-    private Long clinicId;
-    private String clinicName;
+    private ClinicDto clinicDto;
     private String doctorEmail;
     private LocalDateTime visitStart;
     private LocalDateTime visitEnd;

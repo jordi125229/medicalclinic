@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,7 @@ public class Clinic {
     private String street;
     private String number;
     @ManyToMany
-    @JoinTable(name = "doctor_clinic", joinColumns = @JoinColumn(name = "clinic_id"), inverseJoinColumns = @JoinColumn(name = "doctor_id"))
+    @JoinTable(name = "Doctor_clinic", joinColumns = @JoinColumn(name = "clinic_id"), inverseJoinColumns = @JoinColumn(name = "doctor_id"))
     private Set<Doctor> doctors;
     @OneToMany(mappedBy = "clinic")
     private Set<Visit> visit;

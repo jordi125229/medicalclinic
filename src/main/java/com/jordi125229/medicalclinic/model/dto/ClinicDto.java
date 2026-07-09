@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,4 +18,5 @@ public class ClinicDto {
     private String postalCode;
     private String street;
     private String number;
+    private List<DoctorDto> doctorsDto;
 }

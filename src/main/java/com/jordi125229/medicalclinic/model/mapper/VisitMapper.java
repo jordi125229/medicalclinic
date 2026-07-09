@@ -5,10 +5,10 @@ import com.jordi125229.medicalclinic.model.entity.Visit;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses =  ClinicMapper.class)
 public interface VisitMapper {
-    @Mapping(target = "clinicId", source = "clinic.id")
-    @Mapping(target = "clinicName", source = "clinic.name")
+
+    @Mapping(target = "clinicDto", source = "clinic")
     @Mapping(target = "doctorEmail", source = "doctor.user.email")
     @Mapping(target = "patientEmail", source = "patient.user.email")
     VisitDto visitToDto(Visit visit);

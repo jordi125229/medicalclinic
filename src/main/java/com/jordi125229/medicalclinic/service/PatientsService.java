@@ -38,6 +38,7 @@ public class PatientsService {
         return PageableDto.create(patients, patientsPage);
     }
 
+    @Transactional
     public PatientDto createPatient(CreatePatientCommand createPatientCommend) {
         User user = createUser(createPatientCommend);
         userRepository.save(user);
@@ -45,14 +46,6 @@ public class PatientsService {
                 createPatientCommend.getLastName(), createPatientCommend.getPhoneNumber(), createPatientCommend.getBirthday(), user, null);
         Patient patientEntity = patientsRepository.save(patient);
         return patientMapper.patientToDto(patientEntity);
-    }
-
-    private User createUser(CreatePatientCommand createPatientCommend) {
-        validateEmail(createPatientCommend.getEmail());
-        User user = new User();
-        user.setEmail(createPatientCommend.getEmail());
-        user.setPassword(createPatientCommend.getPassword());
-        return user;
     }
 
     public PatientDto getPatientDto(String email) {
@@ -68,6 +61,7 @@ public class PatientsService {
         patientsRepository.delete(patient);
     }
 
+    @Transactional
     public PatientDto editPatient(String email, UpdatePatientCommand patient) {
         Patient patientByEmail = getPatientByEmail(email);
         validateEmailForUpdatePatient(email, patientByEmail.getId());
@@ -79,6 +73,14 @@ public class PatientsService {
     private Patient getPatientByEmail(String email) {
         return patientsRepository.findByUserEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient wasn't found!", HttpStatus.NOT_FOUND));
+    }
+
+    private User createUser(CreatePatientCommand createPatientCommend) {
+        validateEmail(createPatientCommend.getEmail());
+        User user = new User();
+        user.setEmail(createPatientCommend.getEmail());
+        user.setPassword(createPatientCommend.getPassword());
+        return user;
     }
 
     private void validateEmail(String email) {

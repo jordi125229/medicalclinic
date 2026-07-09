@@ -3,6 +3,7 @@ import com.jordi125229.medicalclinic.model.command.CreateVisitCommand;
 import com.jordi125229.medicalclinic.model.dto.PageableDto;
 import com.jordi125229.medicalclinic.model.dto.VisitDto;
 import com.jordi125229.medicalclinic.service.VisitService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/visits")
+@Tag(name = "Visit")
 public class VisitController {
     private final VisitService visitService;
 
