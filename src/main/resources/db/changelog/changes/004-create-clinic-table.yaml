@@ -31,3 +31,16 @@ databaseChangeLog:
               - column:
                   name: number
                   type: VARCHAR(15)
+        - createTable:
+            tableName: Doctor_clinic
+            columns:
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: clinic_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false

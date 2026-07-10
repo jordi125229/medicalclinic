@@ -1,11 +1,11 @@
 databaseChangeLog:
   - changeSet:
-      id: 003-create-doctor-table
+      id: 005-create-visits-table
       author: jordi1225
-      comment: "Doctor table creation"
+      comment: "Visits table creation"
       changes:
         - createTable:
-            tableName: Doctor
+            tableName: Visit
             columns:
               - column:
                   name: id
@@ -15,19 +15,17 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
-                  type: VARCHAR(100)
-              - column:
-                  name: last_name
-                  type: VARCHAR(100)
-              - column:
-                  name: specialization
-                  type: VARCHAR(100)
-              - column:
-                  name: user_id
+                  name: doctor_id
                   type: BIGINT
-                  constraints:
-                    nullable: false
-                    unique: true
-
-
+              - column:
+                  name: patient_id
+                  type: BIGINT
+              - column:
+                  name: visit_start
+                  type: TIMESTAMP
+              - column:
+                  name: visit_end
+                  type: TIMESTAMP
+              - column:
+                  name: clinic_id
+                  type: BIGINT
