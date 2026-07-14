@@ -43,6 +43,11 @@ public class VisitService {
         return PageableDto.create(visits, visitPage);
     }
 
+    public VisitDto getVisit(long visitId) {
+        Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new NoVisitException("Can't find visit", HttpStatus.NOT_FOUND));
+        return visitMapper.visitToDto(visit);
+    }
+
     @Transactional
     public VisitDto createVisit(CreateVisitCommand createVisitCommand) {
         Clinic clinic = clinicRepository.findByName(createVisitCommand.getClinicName())
@@ -79,7 +84,9 @@ public class VisitService {
     @Transactional
     public void deleteVisit(String visitId) {
         long idValue = Long.parseLong(visitId);
-        visitRepository.deleteById(idValue);
+        Visit visit = visitRepository.findById(idValue)
+                .orElseThrow(() -> new NoVisitException("Can't find visit", HttpStatus.NOT_FOUND));
+        visitRepository.delete(visit);
     }
 
     private Patient getPatient(String createVisitCommand) {

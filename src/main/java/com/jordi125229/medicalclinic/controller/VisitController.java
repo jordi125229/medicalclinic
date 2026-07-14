@@ -32,6 +32,11 @@ public class VisitController {
         return visitService.getVisits(page, size);
     }
 
+    @GetMapping("/{id}")
+    public VisitDto getVisit(@PathVariable long id){
+        return visitService.getVisit(id);
+    }
+
     @Operation(summary = "Create a new visit.", description = "Take the information from the client and create a new visit based on the input.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Visit created"),
             @ApiResponse(responseCode = "400", description = "Wrong visit data.", content = @Content(mediaType = "application/json",

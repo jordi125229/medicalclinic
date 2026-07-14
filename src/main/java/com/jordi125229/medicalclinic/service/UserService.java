@@ -27,14 +27,11 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PatientRepository patientRepository;
 
     public PageableDto<UserDto> getUsers(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<User> userPage = userRepository.findAll(pageable);
-        List<UserDto> users = userPage.stream()
-                .map(userMapper::userToDto)
-                .toList();
+        List<UserDto> users = userPage.stream().map(userMapper::userToDto).toList();
         return PageableDto.create(users, userPage);
     }
 
@@ -44,18 +41,6 @@ public class UserService {
         User user = new User(null, createUserCommand.getEmail(), createUserCommand.getPassword(), null, null);
         userRepository.save(user);
         return userMapper.userToDto(user);
-    }
-
-    private void validateEmail(String email) {
-        Optional<User> userFoundByEmail = userRepository.findByEmail(email);
-        if (userFoundByEmail.isPresent()) {
-            throw new PatientsEmailAlreadyExists("User with this email already exists!", HttpStatus.CONFLICT);
-        }
-    }
-
-    private User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new PatientNotFoundException("User wasn't found!", HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -72,5 +57,16 @@ public class UserService {
         }
         user.setPassword(changePassword.getNewPassword());
         userRepository.save(user);
+    }
+
+    private void validateEmail(String email) {
+        Optional<User> userFoundByEmail = userRepository.findByEmail(email);
+        if (userFoundByEmail.isPresent()) {
+            throw new PatientsEmailAlreadyExists("User with this email already exists!", HttpStatus.CONFLICT);
+        }
+    }
+
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("User wasn't found!", HttpStatus.NOT_FOUND));
     }
 }

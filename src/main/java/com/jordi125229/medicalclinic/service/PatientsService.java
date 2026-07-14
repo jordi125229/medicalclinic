@@ -41,11 +41,11 @@ public class PatientsService {
     @Transactional
     public PatientDto createPatient(CreatePatientCommand createPatientCommend) {
         User user = createUser(createPatientCommend);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         Patient patient = new Patient(null, createPatientCommend.getIdCardNo(), createPatientCommend.getFirstName(),
-                createPatientCommend.getLastName(), createPatientCommend.getPhoneNumber(), createPatientCommend.getBirthday(), user, null);
-        Patient patientEntity = patientsRepository.save(patient);
-        return patientMapper.patientToDto(patientEntity);
+                createPatientCommend.getLastName(), createPatientCommend.getPhoneNumber(), createPatientCommend.getBirthday(), savedUser, null);
+        Patient savedPatient = patientsRepository.save(patient);
+        return patientMapper.patientToDto(savedPatient);
     }
 
     public PatientDto getPatientDto(String email) {

@@ -62,19 +62,18 @@ public class DoctorService {
     }
 
     @Transactional
+    public void deleteDoctor(String email) {
+        Doctor doctor = getDoctorByEmail(email);
+        doctor.getUser().setDoctor(null);
+        doctorRepository.deleteById(doctor.getId());
+    }
+
     private User createUser(CreateDoctorCommand commandDoctor) {
         validateEmail(commandDoctor.getEmail());
         User user = new User();
         user.setEmail(commandDoctor.getEmail());
         user.setPassword(commandDoctor.getPassword());
         return user;
-    }
-
-    @Transactional
-    public void deleteDoctor(String email) {
-        Doctor doctor = getDoctorByEmail(email);
-        doctor.getUser().setDoctor(null);
-        doctorRepository.deleteById(doctor.getId());
     }
 
     private void validateEmail(String email) {
