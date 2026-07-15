@@ -1,9 +1,6 @@
 package com.jordi125229.medicalclinic.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@Builder
 public class PageableDto<T> {
     private List<T> content;
     private Integer pageSize;

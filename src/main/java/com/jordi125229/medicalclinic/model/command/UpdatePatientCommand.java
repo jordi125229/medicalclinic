@@ -11,14 +11,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UpdatePatientCommand {
-    @NotBlank
     private String idCardNo;
-    @NotBlank
     private String firstName;
-    @NotBlank
     private String lastName;
-    @NotBlank
     private String phoneNumber;
-    @NotNull
     private LocalDate birthday;
 }
