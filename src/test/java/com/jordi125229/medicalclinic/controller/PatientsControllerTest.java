@@ -1,5 +1,8 @@
 package com.jordi125229.medicalclinic.controller;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jordi125229.medicalclinic.model.command.CreatePatientCommand;
 import com.jordi125229.medicalclinic.model.command.UpdatePatientCommand;
 import com.jordi125229.medicalclinic.model.dto.PageableDto;
 import com.jordi125229.medicalclinic.model.dto.PatientDto;
@@ -11,7 +14,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
 import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -74,6 +80,7 @@ public class PatientsControllerTest {
 
         when(patientsService.getPatientDto(patient.getEmail())).thenReturn(patient);
 
+        // when & then
         mockMvc.perform(get("/patients/email"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("email"))
@@ -85,6 +92,36 @@ public class PatientsControllerTest {
 
     @Test
     void createPatient_DataCorrect_PatientCreated() throws Exception {
+        // given
+        CreatePatientCommand command = CreatePatientCommand.builder()
+                .email("email@gmail.com")
+                .password("password")
+                .idCardNo("idCardNo")
+                .firstName("name")
+                .lastName("lastName")
+                .phoneNumber("12345678")
+                .birthday(LocalDate.of(2020,1,1))
+                .build();
+
+        PatientDto patientDto = PatientDto.builder()
+                .firstName("name")
+                .lastName("lastName")
+                .email("email")
+                .build();
+
+        when(patientsService.createPatient(any())).thenReturn(patientDto);
+
+        // when & then
+        mockMvc.perform(post("/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
+                .andExpect(jsonPath("$.firstName").value("name"))
+                .andExpect(jsonPath("$.lastName").value("lastName"))
+                .andExpect(jsonPath("$.email").value("email"));
+    }
+
+    @Test
+    void updatePatient_DataCorrect_PatientCreated() throws Exception {
         UpdatePatientCommand updatePatientCommand = UpdatePatientCommand.builder()
                 .firstName("newName")
                 .lastName("newLastName")
@@ -97,7 +134,7 @@ public class PatientsControllerTest {
                 .lastName("newLastName")
                 .build();
 
-        when(patientsService.editPatient("email", updatePatientCommand)).thenReturn(patientDto);  // tu zapytac
+        when(patientsService.editPatient(eq("email"), any())).thenReturn(patientDto);
 
         mockMvc.perform(put("/patients/email")
                         .contentType(MediaType.APPLICATION_JSON)

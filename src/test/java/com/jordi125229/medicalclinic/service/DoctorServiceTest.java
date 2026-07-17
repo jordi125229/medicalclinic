@@ -44,7 +44,7 @@ public class DoctorServiceTest {
     }
 
     @Test
-    void getDoctors_DataCorrect_DataGotten() {
+    void getDoctors_DataCorrect_DataReturned() {
         // given
         int pageNumber = 0;
         int pageSize = 1;
@@ -71,7 +71,7 @@ public class DoctorServiceTest {
     }
 
     @Test
-    void getDoctorDto_DataCorrect_DoctorDtoGotten() {
+    void getDoctorDto_DataCorrect_DoctorDtoReturned() {
         //given
         User user = User.builder()
                 .email("email")

@@ -38,7 +38,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void getUsers_DataCorrect_DataGotten() {
+    void getUsers_DataCorrect_UsersReturned() {
         // given
         int pageNumber = 0;
         int pageSize = 1;

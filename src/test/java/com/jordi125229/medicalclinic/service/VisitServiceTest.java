@@ -51,7 +51,7 @@ public class VisitServiceTest {
     }
 
     @Test
-    void getVisits_DataCorrect_DataGotten() {
+    void getVisits_DataCorrect_VisitReturned() {
         // given
         int pageNumber = 0;
         int pageSize = 1;

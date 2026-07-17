@@ -45,7 +45,7 @@ public class ClinicServiceTest {
     }
 
     @Test
-    void getClinics_DataCorrect_DataGotten() {
+    void getClinics_DataCorrect_ClinicsReturned() {
         // given
         int pageNumber = 0;
         int pageSize = 1;
@@ -100,7 +100,7 @@ public class ClinicServiceTest {
     }
 
     @Test
-    void getClinicDto_DataCorrect_ClinicGotten() {
+    void getClinicDto_DataCorrect_ClinicReturned() {
         // given
         Clinic clinic = Clinic.builder()
                 .id(1L)
@@ -160,7 +160,9 @@ public class ClinicServiceTest {
 
         // then
         assertAll(
-                () -> assertEquals("email", clinicDto.getDoctorsDto().getFirst().getEmail())
+                () -> assertEquals("email", clinicDto.getDoctorsDto().getFirst().getEmail()),
+                () -> assertEquals("name", clinicDto.getName()),
+                () -> assertEquals(1L, clinicDto.getClinicId())
         );
     }
 
