@@ -35,7 +35,7 @@ public class PatientsControllerTest {
     private PatientsService patientsService;
 
     @Test
-    void getPatients_DataCorrect_DataGotten() throws Exception {
+    void getPatients_DataCorrect_PatientReturned() throws Exception {
         // given
         int size = 1;
         int page = 0;
@@ -50,7 +50,7 @@ public class PatientsControllerTest {
                 .pageNumber(page)
                 .totalPages(1)
                 .content(patientsDto)
-                .total(1)
+                .total(1L)
                 .build();
 
         when(patientsService.getPatients(page, size)).thenReturn(patientDtoPage);

@@ -48,7 +48,7 @@ public class DoctorControllerTest {
                 .pageSize(size)
                 .pageNumber(page)
                 .totalPages(1)
-                .total(1)
+                .total(1L)
                 .content(doctorDtoList)
                 .build();
 

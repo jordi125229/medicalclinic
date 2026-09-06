@@ -52,7 +52,7 @@ public class VisitControllerTest {
                 .pageSize(size)
                 .pageNumber(page)
                 .totalPages(1)
-                .total(1)
+                .total(1L)
                 .content(visitDtoList)
                 .build();
 

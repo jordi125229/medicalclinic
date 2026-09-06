@@ -1,10 +1,8 @@
 package com.jordi125229.medicalclinic.service;
 
 import com.jordi125229.medicalclinic.exception.*;
-import com.jordi125229.medicalclinic.model.command.UpdateVisitCommand;
 import com.jordi125229.medicalclinic.model.command.CreateVisitCommand;
 import com.jordi125229.medicalclinic.model.dto.PageableDto;
-import com.jordi125229.medicalclinic.model.dto.PatientDto;
 import com.jordi125229.medicalclinic.model.dto.VisitDto;
 import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.model.entity.Doctor;
@@ -23,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -43,9 +43,49 @@ public class VisitService {
         return PageableDto.create(visits, visitPage);
     }
 
+    public PageableDto<VisitDto> getVisitsForPatient(int pageNumber, int pageSize, String email) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Visit> visitPage = visitRepository.findByPatient_User_EmailIgnoreCase(email, pageable);
+        List<VisitDto> visits = visitPage.stream()
+                .map(visitMapper::visitToDto)
+                .toList();
+        return PageableDto.create(visits, visitPage);
+    }
+
+    public PageableDto<VisitDto> getVisitsForDoctor(int pageNumber, int pageSize, String email) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Visit> visitPage = visitRepository.findByDoctor_User_EmailIgnoreCase(email, pageable);
+        List<VisitDto> visits = visitPage.stream()
+                .map(visitMapper::visitToDto)
+                .toList();
+        return PageableDto.create(visits, visitPage);
+    }
+
+    public PageableDto<VisitDto> getAvailableVisitsForDoctor(int pageNumber, int pageSize, String doctorEmail) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Visit> visitPage = visitRepository.findByDoctor_User_EmailIgnoreCaseAndPatientIsNull(doctorEmail, pageable);
+        List<VisitDto> visits = visitPage.stream()
+                .map(visitMapper::visitToDto)
+                .toList();
+        return PageableDto.create(visits, visitPage);
+    }
+
     public VisitDto getVisit(long visitId) {
         Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new NoVisitException("Can't find visit", HttpStatus.NOT_FOUND));
         return visitMapper.visitToDto(visit);
+    }
+
+    public PageableDto<VisitDto> getVisitsForDayByDoctorSpecialization(int pageNumber, int pageSize, LocalDate day, String doctorSpecialization) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        LocalDateTime startOfDay = day.atStartOfDay();
+        LocalDateTime startOfNextDay = day.plusDays(1).atStartOfDay();
+        Page<Visit> visitPage = visitRepository.findByVisitStartGreaterThanEqualAndVisitStartLessThanAndDoctor_SpecializationIgnoreCaseAndPatientIsNull(startOfDay, startOfNextDay, doctorSpecialization, pageable);
+
+        List<VisitDto> visits = visitPage.getContent()
+                .stream()
+                .map(visitMapper::visitToDto)
+                .toList();
+        return PageableDto.create(visits, visitPage);
     }
 
     @Transactional

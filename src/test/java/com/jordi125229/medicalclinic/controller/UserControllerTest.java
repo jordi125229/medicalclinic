@@ -52,7 +52,7 @@ public class UserControllerTest {
                 .pageNumber(page)
                 .totalPages(1)
                 .content(userDtoList)
-                .total(1)
+                .total(1L)
                 .build();
 
         when(userService.getUsers(page, size)).thenReturn(userDtoPage);

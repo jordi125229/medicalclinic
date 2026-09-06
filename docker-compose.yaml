@@ -1,0 +1,22 @@
+services:
+    medicalClinic:
+      container_name: medicalclinic
+      image: medical-clinic
+      ports:
+        - 8080:8080
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/compose-postgres
+        - SPRING_DATASOURCE_USERNAME=Piotr
+        - SPRING_DATASOURCE_PASSWORD=password
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+    database:
+      image: postgres
+      container_name: mydb
+      ports:
+        - 5432:5432
+      environment:
+        POSTGRES_DB: compose-postgres
+        POSTGRES_USER: Piotr
+        POSTGRES_PASSWORD: password
+

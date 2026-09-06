@@ -13,13 +13,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/visits")
 @Tag(name = "Visit")
+@Slf4j
 public class VisitController {
     private final VisitService visitService;
 
@@ -28,13 +32,34 @@ public class VisitController {
             @ApiResponse(responseCode = "400", description = "Wrong request params.", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorMessage.class)))})
     @GetMapping
-    public PageableDto<VisitDto> getVisits(@RequestParam int page, @RequestParam int size) {
+    public PageableDto<VisitDto> getVisits(@RequestParam int page, @RequestParam int size){
         return visitService.getVisits(page, size);
     }
 
+    @GetMapping("/patient")
+    public PageableDto<VisitDto> getVisitsForPatient(@RequestParam int page, @RequestParam int size, @RequestParam String email) {
+        return visitService.getVisitsForPatient(page, size, email);
+    }
+
+    @GetMapping("/doctor")
+    public PageableDto<VisitDto> getVisitsForDoctor(@RequestParam int page, @RequestParam int size, @RequestParam String email) {
+        return visitService.getVisitsForDoctor(page, size, email);
+    }
+
     @GetMapping("/{id}")
-    public VisitDto getVisit(@PathVariable long id){
+    public VisitDto getVisit(@PathVariable long id) {
         return visitService.getVisit(id);
+    }
+
+    @GetMapping("/by-doctor-specialization")
+    public PageableDto<VisitDto> getVisitsForDayByDoctorSpecialization(@RequestParam int page, @RequestParam int size, @RequestParam LocalDate day, @RequestParam String doctorSpecialization) {
+        log.info("Requiest leci");
+        return visitService.getVisitsForDayByDoctorSpecialization(page, size, day, doctorSpecialization);
+    }
+
+    @GetMapping("/doctor/available")
+    public PageableDto<VisitDto> getAvailableVisitsForDoctor(@RequestParam int page, @RequestParam int size, @RequestParam String email) {
+        return visitService.getAvailableVisitsForDoctor(page, size, email);
     }
 
     @Operation(summary = "Create a new visit.", description = "Take the information from the client and create a new visit based on the input.")

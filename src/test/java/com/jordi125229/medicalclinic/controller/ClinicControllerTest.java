@@ -50,7 +50,7 @@ public class ClinicControllerTest {
                 .pageSize(size)
                 .pageNumber(page)
                 .totalPages(1)
-                .total(1)
+                .total(1L)
                 .content(clinicDtoList)
                 .build();
 

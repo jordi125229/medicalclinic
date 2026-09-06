@@ -33,7 +33,7 @@ public class PatientsController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Patients found"),
             @ApiResponse(responseCode = "400", description = "Wrong request params.", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorMessage.class)))})
-    @GetMapping
+    @GetMapping()
     public PageableDto<PatientDto> getPatients(@RequestParam int page, @RequestParam int size) {
         return patientsService.getPatients(page, size);
     }
