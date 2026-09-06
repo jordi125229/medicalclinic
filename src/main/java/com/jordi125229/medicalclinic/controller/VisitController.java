@@ -14,10 +14,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class VisitController {
             @ApiResponse(responseCode = "400", description = "Wrong request params.", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorMessage.class)))})
     @GetMapping
-    public PageableDto<VisitDto> getVisits(@RequestParam int page, @RequestParam int size){
+    public PageableDto<VisitDto> getVisits(@RequestParam int page, @RequestParam int size) {
         return visitService.getVisits(page, size);
     }
 
@@ -52,9 +54,19 @@ public class VisitController {
     }
 
     @GetMapping("/by-doctor-specialization")
+    public PageableDto<VisitDto> getVisitsByDoctorSpecialization(@RequestParam int page, @RequestParam int size, @RequestParam String doctorSpecialization) {
+        return visitService.getVisitsByDoctorSpecialization(page, size, doctorSpecialization);
+    }
+
+    @GetMapping("/by-doctor-specialization/day")
     public PageableDto<VisitDto> getVisitsForDayByDoctorSpecialization(@RequestParam int page, @RequestParam int size, @RequestParam LocalDate day, @RequestParam String doctorSpecialization) {
-        log.info("Requiest leci");
         return visitService.getVisitsForDayByDoctorSpecialization(page, size, day, doctorSpecialization);
+    }
+
+    @GetMapping("/by-period")
+    public PageableDto<VisitDto> getAvailableVisitsByPeriod(@RequestParam int page, @RequestParam int size, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+                                                    @RequestParam(required = false) String specialization) {
+        return visitService.getAvailableVisitsForPeriod(page, size, start, end, specialization);
     }
 
     @GetMapping("/doctor/available")

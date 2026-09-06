@@ -61,6 +61,16 @@ public class VisitService {
         return PageableDto.create(visits, visitPage);
     }
 
+    public PageableDto<VisitDto> getVisitsByDoctorSpecialization(int pageNumber, int pageSize, String doctorSpecialization) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Visit> visitPage = visitRepository.findByDoctor_SpecializationIgnoreCase(doctorSpecialization, pageable);
+        List<VisitDto> visits = visitPage.getContent()
+                .stream()
+                .map(visitMapper::visitToDto)
+                .toList();
+        return PageableDto.create(visits, visitPage);
+    }
+
     public PageableDto<VisitDto> getAvailableVisitsForDoctor(int pageNumber, int pageSize, String doctorEmail) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Visit> visitPage = visitRepository.findByDoctor_User_EmailIgnoreCaseAndPatientIsNull(doctorEmail, pageable);
@@ -80,6 +90,17 @@ public class VisitService {
         LocalDateTime startOfDay = day.atStartOfDay();
         LocalDateTime startOfNextDay = day.plusDays(1).atStartOfDay();
         Page<Visit> visitPage = visitRepository.findByVisitStartGreaterThanEqualAndVisitStartLessThanAndDoctor_SpecializationIgnoreCaseAndPatientIsNull(startOfDay, startOfNextDay, doctorSpecialization, pageable);
+
+        List<VisitDto> visits = visitPage.getContent()
+                .stream()
+                .map(visitMapper::visitToDto)
+                .toList();
+        return PageableDto.create(visits, visitPage);
+    }
+
+    public PageableDto<VisitDto> getAvailableVisitsForPeriod(int pageNumber, int pageSize, LocalDateTime start, LocalDateTime end, String specialization) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Visit> visitPage = visitRepository.findAvailableVisits(start, end, specialization, pageable);
 
         List<VisitDto> visits = visitPage.getContent()
                 .stream()

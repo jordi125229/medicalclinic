@@ -5,7 +5,10 @@ import com.jordi125229.medicalclinic.model.entity.Visit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 
 @Repository
@@ -20,4 +23,18 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     Page<Visit> findByDoctor_User_EmailIgnoreCase(String email, Pageable pageable);
 
     Page<Visit> findByDoctor_User_EmailIgnoreCaseAndPatientIsNull(String email, Pageable pageable);
+
+    Page<Visit> findByDoctor_SpecializationIgnoreCase(String specialization, Pageable pageable);
+
+    @Query("""
+            SELECT v
+            FROM Visit v
+            WHERE v.visitStart >= :start
+              AND v.visitStart < :end
+              AND v.patient IS NULL
+              AND (:specialization IS NULL
+                   OR :specialization = ''
+                   OR LOWER(v.doctor.specialization) = LOWER(:specialization))
+            """)
+    Page<Visit> findAvailableVisits(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("specialization") String specialization, Pageable pageable);
 }
