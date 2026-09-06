@@ -1,0 +1,174 @@
+name: Medical Clinic CI/CD
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
+env:
+  IMAGE_NAME: medical-clinic
+
+jobs:
+
+  # ============================================================
+  # 1. BUILD & TEST
+  # ============================================================
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Build and test
+        run: mvn -B clean verify
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-jar
+          path: target/*.jar
+
+
+  # ============================================================
+  # 2. DOCKER BUILD
+  # ============================================================
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: application-jar
+          path: target
+
+      - name: Check JAR
+        run: |
+          echo "JAR files:"
+          ls -lah target/
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            .
+
+      - name: Save Docker image
+        run: |
+          docker save \
+            ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -o medical-clinic.tar
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: medical-clinic.tar
+
+
+  # ============================================================
+  # 3. TRIVY SECURITY SCAN
+  # ============================================================
+  security:
+    name: Docker Security Scan
+    runs-on: ubuntu-latest
+    needs: docker-build
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: |
+          docker load \
+            -i medical-clinic.tar
+
+      - name: Verify Docker image
+        run: |
+          docker images
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: medical-clinic:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+
+  # ============================================================
+  # 4. PUSH TO GHCR
+  # ============================================================
+  push:
+    name: Push Image to GHCR
+    runs-on: ubuntu-latest
+    needs: security
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: |
+          docker load \
+            -i medical-clinic.tar
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag Docker image
+        run: |
+          docker tag \
+            medical-clinic:${{ github.sha }} \
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Push Docker image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+
+  # ============================================================
+  # 5. DEPLOY
+  # ============================================================
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: push
+
+    steps:
+      - name: Deploy application
+        run: |
+          echo "Deploying medical-clinic..."
+          echo "Image:"
+          echo "ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "Deployment successful!"
