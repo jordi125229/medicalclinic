@@ -2,18 +2,17 @@ package com.jordi125229.medicalclinic.model.entity;
 
 import com.jordi125229.medicalclinic.model.command.UpdatePatientCommand;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +25,8 @@ public class Patient {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany(mappedBy = "patient")
+    private Set<Visit> visit;
 
     public void editPatient(UpdatePatientCommand patient) {
         this.idCardNo = patient.getIdCardNo();

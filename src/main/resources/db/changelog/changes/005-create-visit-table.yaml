@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-visits-table
+      author: jordi1225
+      comment: "Visits table creation"
+      changes:
+        - createTable:
+            tableName: Visit
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+              - column:
+                  name: patient_id
+                  type: BIGINT
+              - column:
+                  name: visit_start
+                  type: TIMESTAMP
+              - column:
+                  name: visit_end
+                  type: TIMESTAMP
+              - column:
+                  name: clinic_id
+                  type: BIGINT

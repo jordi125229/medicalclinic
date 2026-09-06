@@ -1,16 +1,16 @@
 package com.jordi125229.medicalclinic.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,9 @@ public class Clinic {
     private String postalCode;
     private String street;
     private String number;
-    @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
+    @ManyToMany
+    @JoinTable(name = "Doctor_clinic", joinColumns = @JoinColumn(name = "clinic_id"), inverseJoinColumns = @JoinColumn(name = "doctor_id"))
+    private Set<Doctor> doctors;
+    @OneToMany(mappedBy = "clinic")
+    private Set<Visit> visit;
 }

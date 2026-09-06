@@ -6,15 +6,22 @@ import com.jordi125229.medicalclinic.exception.PatientsEmailAlreadyExists;
 import com.jordi125229.medicalclinic.model.command.CreateDoctorCommand;
 import com.jordi125229.medicalclinic.model.command.CreatePatientCommand;
 import com.jordi125229.medicalclinic.model.dto.DoctorDto;
+import com.jordi125229.medicalclinic.model.dto.PageableDto;
+import com.jordi125229.medicalclinic.model.entity.Clinic;
 import com.jordi125229.medicalclinic.model.entity.Doctor;
 import com.jordi125229.medicalclinic.model.entity.Patient;
 import com.jordi125229.medicalclinic.model.entity.User;
 import com.jordi125229.medicalclinic.model.mapper.DoctorMapper;
 import com.jordi125229.medicalclinic.repository.DoctorRepository;
 import com.jordi125229.medicalclinic.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,29 +32,40 @@ public class DoctorService {
     private final UserRepository userRepository;
     private final DoctorMapper doctorMapper;
 
-    public List<DoctorDto> getDoctors() {
-        return doctorRepository.findAll().stream()
+    public PageableDto<DoctorDto> getDoctors(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Doctor> doctorsPage = doctorRepository.findAll(pageable);
+        List<DoctorDto> doctors = doctorsPage.stream()
                 .map(doctorMapper::doctorToDto)
                 .toList();
+        return PageableDto.create(doctors, doctorsPage);
     }
 
-    public DoctorDto getDoctorDto(String email){
+    public DoctorDto getDoctorDto(String email) {
         Doctor doctor = getDoctorByEmail(email);
         return doctorMapper.doctorToDto(doctor);
     }
 
-    public Doctor getDoctorByEmail(String email) {
+    private Doctor getDoctorByEmail(String email) {
         return doctorRepository.findByUserEmail(email)
                 .orElseThrow(() -> new NoDoctorException("Doctor wasn't found!", HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
     public DoctorDto createDoctor(CreateDoctorCommand commandDoctor) {
         User user = createUser(commandDoctor);
         userRepository.save(user);
         Doctor doctor = new Doctor(null, commandDoctor.getName(), commandDoctor.getLastName(),
-                commandDoctor.getSpecialization(), null, user);
+                commandDoctor.getSpecialization(), null, user, null);
         doctorRepository.save(doctor);
         return doctorMapper.doctorToDto(doctor);
+    }
+
+    @Transactional
+    public void deleteDoctor(String email) {
+        Doctor doctor = getDoctorByEmail(email);
+        doctor.getUser().setDoctor(null);
+        doctorRepository.deleteById(doctor.getId());
     }
 
     private User createUser(CreateDoctorCommand commandDoctor) {
@@ -58,15 +76,10 @@ public class DoctorService {
         return user;
     }
 
-    public void deleteDoctor(String email){
-        Doctor doctor = getDoctorByEmail(email);
-        doctorRepository.delete(doctor);
-    }
-
     private void validateEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            throw new PatientsEmailAlreadyExists("User's email already exists!", HttpStatus.CONFLICT);
+            throw new PatientsEmailAlreadyExists("User with this email already exists!", HttpStatus.CONFLICT);
         }
     }
 }

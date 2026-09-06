@@ -1,15 +1,15 @@
 package com.jordi125229.medicalclinic.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DoctorDto {
+    private Long doctorId;
+    private String email;
     private String name;
     private String lastName;
     private String specialization;

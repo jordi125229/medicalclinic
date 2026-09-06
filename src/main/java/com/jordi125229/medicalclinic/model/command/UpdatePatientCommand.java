@@ -1,12 +1,7 @@
 package com.jordi125229.medicalclinic.model.command;
-
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -14,18 +9,11 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UpdatePatientCommand {
-    @NotBlank(message = "Email cannot be empty!")
-    @Email(message = "Wrong email format!")
-    private String email;
-    @NotBlank
     private String idCardNo;
-    @NotBlank
     private String firstName;
-    @NotBlank
     private String lastName;
-    @NotBlank
     private String phoneNumber;
-    @NotNull
     private LocalDate birthday;
 }
